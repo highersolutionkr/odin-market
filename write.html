@@ -1,0 +1,547 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>판매 등록 — 오딘 거래소</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+KR:wght@400;600;900&family=Noto+Sans+KR:wght@300;400;500;700&display=swap" rel="stylesheet"/>
+  <style>
+    :root {
+      --bg: #0a0c10;
+      --surface: #111318;
+      --surface2: #181c24;
+      --border: #252a36;
+      --gold: #c9a84c;
+      --gold-light: #e8c96a;
+      --gold-dim: rgba(201,168,76,0.15);
+      --red: #c94c4c;
+      --green: #4caf82;
+      --text: #e8e2d4;
+      --text-muted: #7a7565;
+      --text-dim: #4a4840;
+      --glow: rgba(201,168,76,0.3);
+    }
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'Noto Sans KR', sans-serif;
+      min-height: 100vh;
+    }
+
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background: radial-gradient(ellipse 80% 50% at 50% -10%, rgba(201,168,76,0.08) 0%, transparent 60%);
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    header {
+      position: relative;
+      z-index: 10;
+      border-bottom: 1px solid var(--border);
+      background: rgba(10,12,16,0.95);
+      backdrop-filter: blur(12px);
+    }
+    .header-inner {
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 0 24px;
+      height: 64px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .logo {
+      font-family: 'Noto Serif KR', serif;
+      font-weight: 900;
+      font-size: 1.35rem;
+      color: var(--gold);
+      letter-spacing: 0.05em;
+      text-decoration: none;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .logo-rune {
+      width: 32px; height: 32px;
+      border: 1.5px solid var(--gold);
+      border-radius: 6px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 0.85rem;
+      box-shadow: 0 0 10px var(--glow);
+    }
+    .btn-back {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      color: var(--text-muted);
+      font-size: 0.85rem;
+      text-decoration: none;
+      transition: color 0.2s;
+    }
+    .btn-back:hover { color: var(--text); }
+
+    /* 폼 레이아웃 */
+    .form-page {
+      position: relative;
+      z-index: 1;
+      max-width: 600px;
+      margin: 0 auto;
+      padding: 48px 24px 80px;
+    }
+
+    .page-title {
+      font-family: 'Noto Serif KR', serif;
+      font-size: 1.7rem;
+      font-weight: 900;
+      color: var(--text);
+      margin-bottom: 6px;
+    }
+    .page-title span { color: var(--gold); }
+    .page-desc {
+      font-size: 0.82rem;
+      color: var(--text-muted);
+      margin-bottom: 36px;
+    }
+
+    .form-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 32px;
+    }
+
+    .form-group {
+      margin-bottom: 22px;
+    }
+    .form-label {
+      display: block;
+      font-size: 0.8rem;
+      font-weight: 700;
+      color: var(--text-muted);
+      letter-spacing: 0.07em;
+      text-transform: uppercase;
+      margin-bottom: 8px;
+    }
+    .form-label .required {
+      color: var(--gold);
+      margin-left: 3px;
+    }
+    .form-hint {
+      font-size: 0.72rem;
+      color: var(--text-dim);
+      margin-top: 5px;
+      font-weight: 300;
+    }
+
+    .form-input, .form-select, .form-textarea {
+      width: 100%;
+      background: var(--bg);
+      border: 1px solid var(--border);
+      color: var(--text);
+      font-family: 'Noto Sans KR', sans-serif;
+      font-size: 0.9rem;
+      padding: 11px 14px;
+      border-radius: 7px;
+      transition: border-color 0.2s, box-shadow 0.2s;
+    }
+    .form-input::placeholder, .form-textarea::placeholder {
+      color: var(--text-dim);
+    }
+    .form-input:focus, .form-select:focus, .form-textarea:focus {
+      outline: none;
+      border-color: var(--gold);
+      box-shadow: 0 0 0 3px rgba(201,168,76,0.12);
+    }
+    .form-textarea {
+      resize: vertical;
+      min-height: 100px;
+      line-height: 1.6;
+    }
+    .form-select {
+      cursor: pointer;
+    }
+    .form-select option {
+      background: var(--surface2);
+    }
+
+    /* 비밀번호 필드 */
+    .pw-wrap {
+      position: relative;
+    }
+    .pw-wrap .form-input {
+      padding-right: 44px;
+    }
+    .pw-toggle {
+      position: absolute;
+      right: 12px;
+      top: 50%;
+      transform: translateY(-50%);
+      background: none;
+      border: none;
+      color: var(--text-dim);
+      cursor: pointer;
+      font-size: 0.75rem;
+      padding: 4px;
+    }
+    .pw-toggle:hover { color: var(--text-muted); }
+
+    /* 카카오 URL 미리보기 */
+    .kakao-preview {
+      display: none;
+      align-items: center;
+      gap: 8px;
+      margin-top: 8px;
+      background: rgba(254,229,0,0.08);
+      border: 1px solid rgba(254,229,0,0.2);
+      border-radius: 6px;
+      padding: 8px 12px;
+      font-size: 0.78rem;
+      color: #FEE500;
+    }
+    .kakao-preview.show { display: flex; }
+
+    /* 구분선 */
+    .form-divider {
+      height: 1px;
+      background: var(--border);
+      margin: 24px 0;
+    }
+    .divider-label {
+      text-align: center;
+      font-size: 0.72rem;
+      color: var(--text-dim);
+      margin-top: -22px;
+      position: relative;
+    }
+    .divider-label span {
+      background: var(--surface);
+      padding: 0 12px;
+    }
+
+    /* 제출 버튼 */
+    .btn-submit {
+      width: 100%;
+      background: var(--gold);
+      color: #0a0c10;
+      font-family: 'Noto Sans KR', sans-serif;
+      font-weight: 700;
+      font-size: 1rem;
+      padding: 14px;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      letter-spacing: 0.02em;
+      transition: background 0.2s, box-shadow 0.2s, transform 0.1s;
+      margin-top: 8px;
+    }
+    .btn-submit:hover {
+      background: var(--gold-light);
+      box-shadow: 0 0 24px var(--glow);
+    }
+    .btn-submit:active { transform: scale(0.98); }
+    .btn-submit:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+      box-shadow: none;
+    }
+
+    /* 성공 메시지 */
+    .success-box {
+      display: none;
+      text-align: center;
+      padding: 40px 24px;
+    }
+    .success-box.show { display: block; }
+    .success-icon {
+      width: 64px; height: 64px;
+      background: rgba(76,175,130,0.12);
+      border: 2px solid var(--green);
+      border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 1.8rem;
+      margin: 0 auto 20px;
+    }
+    .success-box h3 {
+      font-family: 'Noto Serif KR', serif;
+      font-size: 1.3rem;
+      color: var(--text);
+      margin-bottom: 8px;
+    }
+    .success-box p {
+      font-size: 0.85rem;
+      color: var(--text-muted);
+      margin-bottom: 24px;
+    }
+    .btn-home {
+      display: inline-block;
+      background: var(--gold);
+      color: #0a0c10;
+      font-weight: 700;
+      font-size: 0.9rem;
+      padding: 12px 28px;
+      border-radius: 7px;
+      text-decoration: none;
+      transition: background 0.2s;
+    }
+    .btn-home:hover { background: var(--gold-light); }
+
+    /* 에러 */
+    .field-error {
+      font-size: 0.75rem;
+      color: var(--red);
+      margin-top: 5px;
+      display: none;
+    }
+    .field-error.show { display: block; }
+    .form-input.error, .form-select.error, .form-textarea.error {
+      border-color: var(--red);
+    }
+
+    /* 로딩 스피너 버튼 */
+    .spinner-btn {
+      display: inline-block;
+      width: 16px; height: 16px;
+      border: 2px solid rgba(0,0,0,0.3);
+      border-top-color: #000;
+      border-radius: 50%;
+      animation: spin 0.7s linear infinite;
+      vertical-align: middle;
+      margin-right: 6px;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    /* 광고 */
+    .ad-side {
+      max-width: 600px;
+      margin: 0 auto;
+      padding: 0 24px 24px;
+      position: relative;
+      z-index: 1;
+    }
+    .ad-side-inner {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 14px;
+      text-align: center;
+      color: var(--text-dim);
+      font-size: 0.72rem;
+      min-height: 70px;
+      display: flex; align-items: center; justify-content: center;
+    }
+  </style>
+</head>
+<body>
+
+<header>
+  <div class="header-inner">
+    <a href="index.html" class="logo">
+      <div class="logo-rune">⚔</div>
+      오딘 거래소
+    </a>
+    <a href="index.html" class="btn-back">← 목록으로</a>
+  </div>
+</header>
+
+<div class="form-page">
+  <div class="page-title"><span>판매</span> 등록</div>
+  <p class="page-desc">아이템 정보와 연락처를 입력하면 7일간 게시됩니다.</p>
+
+  <div class="form-card">
+    <!-- 성공 화면 -->
+    <div class="success-box" id="successBox">
+      <div class="success-icon">✓</div>
+      <h3>등록 완료!</h3>
+      <p>7일 후 자동으로 삭제됩니다.<br/>비밀번호는 꼭 기억해 두세요.</p>
+      <a href="index.html" class="btn-home">목록 보러 가기</a>
+    </div>
+
+    <!-- 폼 -->
+    <form id="postForm">
+
+      <!-- 서버 -->
+      <div class="form-group">
+        <label class="form-label" for="server">서버 <span class="required">*</span></label>
+        <select class="form-select" id="server" required>
+          <option value="">서버를 선택하세요</option>
+          <option>아스가르드</option>
+          <option>미드가르드</option>
+          <option>요툰헤임</option>
+          <option>니플헤임</option>
+          <option>무스펠헤임</option>
+          <option>알프헤임</option>
+          <option>바나헤임</option>
+          <option>헬헤임</option>
+        </select>
+        <div class="field-error" id="serverError">서버를 선택해주세요.</div>
+      </div>
+
+      <!-- 아이템명 -->
+      <div class="form-group">
+        <label class="form-label" for="itemName">아이템명 <span class="required">*</span></label>
+        <input class="form-input" type="text" id="itemName" placeholder="예) 오딘의 눈물 +15, 전설 갑옷 세트" maxlength="60" required/>
+        <div class="field-error" id="itemNameError">아이템명을 입력해주세요.</div>
+      </div>
+
+      <!-- 추가 설명 -->
+      <div class="form-group">
+        <label class="form-label" for="memo">추가 설명</label>
+        <textarea class="form-textarea" id="memo" placeholder="가격, 옵션, 거래 방법 등 자유롭게 적어주세요." maxlength="300"></textarea>
+        <div class="form-hint">최대 300자 · <span id="memoCount">0</span>/300</div>
+      </div>
+
+      <!-- 카카오 URL -->
+      <div class="form-group">
+        <label class="form-label" for="kakaoUrl">오픈카카오톡 URL <span class="required">*</span></label>
+        <input class="form-input" type="url" id="kakaoUrl" placeholder="https://open.kakao.com/o/xxxxxxxx" required/>
+        <div class="kakao-preview" id="kakaoPreview">
+          💬 입력된 링크로 연결됩니다 — 올바른 URL인지 확인하세요
+        </div>
+        <div class="field-error" id="kakaoError">올바른 카카오 오픈채팅 URL을 입력해주세요.</div>
+      </div>
+
+      <div class="form-divider"></div>
+      <div class="divider-label"><span>게시글 보호</span></div>
+
+      <!-- 비밀번호 -->
+      <div class="form-group" style="margin-top:20px">
+        <label class="form-label" for="password">삭제용 비밀번호 <span class="required">*</span></label>
+        <div class="pw-wrap">
+          <input class="form-input" type="password" id="password" placeholder="나중에 삭제할 때 사용됩니다" maxlength="20" required/>
+          <button type="button" class="pw-toggle" id="pwToggle" onclick="togglePw()">표시</button>
+        </div>
+        <div class="form-hint">숫자·영문 4자 이상 · 분실 시 복구 불가</div>
+        <div class="field-error" id="passwordError">비밀번호는 4자 이상 입력해주세요.</div>
+      </div>
+
+      <button type="submit" class="btn-submit" id="submitBtn">판매 게시글 등록하기</button>
+
+    </form>
+  </div>
+</div>
+
+<!-- 광고 영역 -->
+<div class="ad-side">
+  <div class="ad-side-inner">
+    <!-- 쿠팡파트너스 코드 삽입 -->
+    <span>광고 영역 — 쿠팡파트너스 코드를 삽입하세요</span>
+  </div>
+</div>
+
+<!-- Firebase SDK -->
+<script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+  import { getFirestore, collection, addDoc, serverTimestamp }
+    from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+
+  // TODO: 본인의 Firebase 설정으로 교체하세요
+  const firebaseConfig = {
+    apiKey: "YOUR_API_KEY",
+    authDomain: "YOUR_PROJECT.firebaseapp.com",
+    projectId: "YOUR_PROJECT_ID",
+    storageBucket: "YOUR_PROJECT.appspot.com",
+    messagingSenderId: "YOUR_SENDER_ID",
+    appId: "YOUR_APP_ID"
+  };
+
+  const app = initializeApp(firebaseConfig);
+  const db = getFirestore(app);
+
+  // ─── 글자수 카운터 ─────────────────────────────
+  document.getElementById('memo').addEventListener('input', function() {
+    document.getElementById('memoCount').textContent = this.value.length;
+  });
+
+  // ─── 카카오 URL 미리보기 ───────────────────────
+  document.getElementById('kakaoUrl').addEventListener('input', function() {
+    const preview = document.getElementById('kakaoPreview');
+    const val = this.value.trim();
+    if (val.startsWith('https://open.kakao.com/')) {
+      preview.classList.add('show');
+    } else {
+      preview.classList.remove('show');
+    }
+  });
+
+  // ─── 비밀번호 토글 ─────────────────────────────
+  window.togglePw = function() {
+    const input = document.getElementById('password');
+    const btn = document.getElementById('pwToggle');
+    if (input.type === 'password') {
+      input.type = 'text';
+      btn.textContent = '숨기기';
+    } else {
+      input.type = 'password';
+      btn.textContent = '표시';
+    }
+  };
+
+  // ─── 유효성 검사 ───────────────────────────────
+  function validate() {
+    let ok = true;
+
+    const clearErr = (id, errId) => {
+      document.getElementById(id).classList.remove('error');
+      document.getElementById(errId).classList.remove('show');
+    };
+    const showErr = (id, errId) => {
+      document.getElementById(id).classList.add('error');
+      document.getElementById(errId).classList.add('show');
+      ok = false;
+    };
+
+    clearErr('server', 'serverError');
+    clearErr('itemName', 'itemNameError');
+    clearErr('kakaoUrl', 'kakaoError');
+    clearErr('password', 'passwordError');
+
+    if (!document.getElementById('server').value) showErr('server', 'serverError');
+    if (!document.getElementById('itemName').value.trim()) showErr('itemName', 'itemNameError');
+
+    const kakaoUrl = document.getElementById('kakaoUrl').value.trim();
+    if (!kakaoUrl || !kakaoUrl.startsWith('https://open.kakao.com/')) showErr('kakaoUrl', 'kakaoError');
+
+    if (document.getElementById('password').value.length < 4) showErr('password', 'passwordError');
+
+    return ok;
+  }
+
+  // ─── 폼 제출 ───────────────────────────────────
+  document.getElementById('postForm').addEventListener('submit', async function(e) {
+    e.preventDefault();
+    if (!validate()) return;
+
+    const btn = document.getElementById('submitBtn');
+    btn.disabled = true;
+    btn.innerHTML = '<span class="spinner-btn"></span> 등록 중…';
+
+    try {
+      await addDoc(collection(db, "posts"), {
+        server: document.getElementById('server').value,
+        itemName: document.getElementById('itemName').value.trim(),
+        memo: document.getElementById('memo').value.trim(),
+        kakaoUrl: document.getElementById('kakaoUrl').value.trim(),
+        password: document.getElementById('password').value,
+        createdAt: serverTimestamp()
+      });
+
+      document.getElementById('postForm').style.display = 'none';
+      document.getElementById('successBox').classList.add('show');
+
+    } catch (err) {
+      console.error(err);
+      alert('등록 중 오류가 발생했습니다. Firebase 설정을 확인해주세요.');
+      btn.disabled = false;
+      btn.textContent = '판매 게시글 등록하기';
+    }
+  });
+</script>
+
+</body>
+</html>
