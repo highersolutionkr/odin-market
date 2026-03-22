@@ -472,6 +472,13 @@
         <div class="field-error" id="itemNameError">아이템명을 입력해주세요.</div>
       </div>
 
+      <!-- 가격 -->
+      <div class="form-group">
+        <label class="form-label" for="price">가격</label>
+        <input class="form-input" type="text" id="price" placeholder="예) 500만골드, 5,000원, 가격협의" maxlength="30"/>
+        <div class="form-hint">직접 입력 · 선택 사항</div>
+      </div>
+
       <!-- 추가 설명 -->
       <div class="form-group">
         <label class="form-label" for="memo">추가 설명</label>
@@ -609,9 +616,11 @@
       await addDoc(collection(db, "posts"), {
         server: document.getElementById('server').value,
         itemName: document.getElementById('itemName').value.trim(),
+        price: document.getElementById('price').value.trim(),
         memo: document.getElementById('memo').value.trim(),
         kakaoUrl: document.getElementById('kakaoUrl').value.trim(),
         password: document.getElementById('password').value,
+        views: 0,
         createdAt: serverTimestamp()
       });
 
