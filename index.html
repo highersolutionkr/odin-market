@@ -22,16 +22,7 @@
       --glow: rgba(201,168,76,0.3);
     }
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-
-    body {
-      background: var(--bg);
-      color: var(--text);
-      font-family: 'Noto Sans KR', sans-serif;
-      min-height: 100vh;
-      overflow-x: hidden;
-    }
-
-    /* 배경 텍스처 */
+    body { background: var(--bg); color: var(--text); font-family: 'Noto Sans KR', sans-serif; min-height: 100vh; overflow-x: hidden; }
     body::before {
       content: '';
       position: fixed;
@@ -43,462 +34,104 @@
       pointer-events: none;
       z-index: 0;
     }
+    header { position: relative; z-index: 10; border-bottom: 1px solid var(--border); background: rgba(10,12,16,0.95); backdrop-filter: blur(12px); }
+    .header-inner { max-width: 1100px; margin: 0 auto; padding: 0 24px; height: 64px; display: flex; align-items: center; justify-content: space-between; }
+    .logo { font-family: 'Noto Serif KR', serif; font-weight: 900; font-size: 1.35rem; color: var(--gold); letter-spacing: 0.05em; text-decoration: none; display: flex; align-items: center; gap: 10px; }
+    .logo-rune { width: 32px; height: 32px; border: 1.5px solid var(--gold); border-radius: 6px; display: flex; align-items: center; justify-content: center; font-size: 0.85rem; box-shadow: 0 0 10px var(--glow); }
+    .btn-write { display: inline-flex; align-items: center; gap: 8px; background: var(--gold); color: #0a0c10; font-weight: 700; font-size: 0.85rem; padding: 9px 20px; border-radius: 6px; text-decoration: none; letter-spacing: 0.02em; transition: background 0.2s, box-shadow 0.2s; }
+    .btn-write:hover { background: var(--gold-light); box-shadow: 0 0 18px var(--glow); }
 
-    /* 헤더 */
-    header {
-      position: relative;
-      z-index: 10;
-      border-bottom: 1px solid var(--border);
-      background: rgba(10,12,16,0.95);
-      backdrop-filter: blur(12px);
-    }
-    .header-inner {
-      max-width: 1100px;
-      margin: 0 auto;
-      padding: 0 24px;
-      height: 64px;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-    }
-    .logo {
-      font-family: 'Noto Serif KR', serif;
-      font-weight: 900;
-      font-size: 1.35rem;
-      color: var(--gold);
-      letter-spacing: 0.05em;
-      text-decoration: none;
-      display: flex;
-      align-items: center;
-      gap: 10px;
-    }
-    .logo-rune {
-      width: 32px; height: 32px;
-      border: 1.5px solid var(--gold);
-      border-radius: 6px;
-      display: flex; align-items: center; justify-content: center;
-      font-size: 0.85rem;
-      box-shadow: 0 0 10px var(--glow);
-    }
-    .btn-write {
-      display: inline-flex;
-      align-items: center;
-      gap: 8px;
-      background: var(--gold);
-      color: #0a0c10;
-      font-weight: 700;
-      font-size: 0.85rem;
-      padding: 9px 20px;
-      border-radius: 6px;
-      text-decoration: none;
-      letter-spacing: 0.02em;
-      transition: background 0.2s, box-shadow 0.2s;
-    }
-    .btn-write:hover {
-      background: var(--gold-light);
-      box-shadow: 0 0 18px var(--glow);
-    }
-
-    /* 히어로 */
-    .hero {
-      position: relative;
-      z-index: 1;
-      text-align: center;
-      padding: 52px 24px 40px;
-    }
-    .hero h1 {
-      font-family: 'Noto Serif KR', serif;
-      font-size: clamp(1.6rem, 4vw, 2.8rem);
-      font-weight: 900;
-      color: var(--text);
-      line-height: 1.2;
-    }
+    .hero { position: relative; z-index: 1; text-align: center; padding: 52px 24px 32px; }
+    .hero h1 { font-family: 'Noto Serif KR', serif; font-size: clamp(1.6rem, 4vw, 2.8rem); font-weight: 900; color: var(--text); line-height: 1.2; }
     .hero h1 span { color: var(--gold); }
-    .hero p {
-      margin-top: 10px;
-      color: var(--text-muted);
-      font-size: 0.9rem;
-      font-weight: 300;
-    }
+    .hero p { margin-top: 10px; color: var(--text-muted); font-size: 0.9rem; font-weight: 300; }
 
-    /* 광고 배너 */
-    .ad-banner {
-      max-width: 1100px;
-      margin: 0 auto 28px;
-      padding: 0 24px;
-      position: relative;
-      z-index: 1;
-    }
-    .ad-banner-inner {
-      background: var(--surface);
-      border: 1px solid var(--border);
-      border-radius: 8px;
-      padding: 16px;
-      text-align: center;
-      color: var(--text-dim);
-      font-size: 0.75rem;
-      min-height: 90px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-    }
-    /* 쿠팡파트너스 광고가 삽입되면 아래 주석 해제 */
-    /* #coupang-ad { ... } */
+    /* 서버별 통계 */
+    .stats-wrap { max-width: 1100px; margin: 0 auto 28px; padding: 0 24px; position: relative; z-index: 1; }
+    .stats-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(110px, 1fr)); gap: 8px; }
+    .stat-card { background: var(--surface); border: 1px solid var(--border); border-radius: 8px; padding: 12px 10px; text-align: center; cursor: pointer; transition: border-color 0.2s; }
+    .stat-card:hover { border-color: rgba(201,168,76,0.4); }
+    .stat-card.active { border-color: var(--gold); background: var(--gold-dim); }
+    .stat-server { font-size: 0.72rem; color: var(--text-muted); margin-bottom: 4px; }
+    .stat-count { font-size: 1.3rem; font-weight: 700; color: var(--gold); font-family: 'Noto Serif KR', serif; }
+    .stat-label { font-size: 0.65rem; color: var(--text-dim); margin-top: 2px; }
+
+    /* 광고 */
+    .ad-banner { max-width: 1100px; margin: 0 auto 28px; padding: 0 24px; position: relative; z-index: 1; }
+    .ad-banner-inner { background: var(--surface); border: 1px solid var(--border); border-radius: 8px; padding: 16px; text-align: center; color: var(--text-dim); font-size: 0.75rem; min-height: 90px; display: flex; align-items: center; justify-content: center; }
 
     /* 필터 바 */
-    .filter-bar {
-      max-width: 1100px;
-      margin: 0 auto 20px;
-      padding: 0 24px;
-      display: flex;
-      align-items: center;
-      gap: 12px;
-      flex-wrap: wrap;
-      position: relative;
-      z-index: 1;
-    }
-    .filter-bar label {
-      font-size: 0.78rem;
-      color: var(--text-muted);
-      white-space: nowrap;
-    }
-    .filter-select {
-      background: var(--surface);
-      border: 1px solid var(--border);
-      color: var(--text);
-      font-size: 0.82rem;
-      padding: 7px 12px;
-      border-radius: 6px;
-      cursor: pointer;
-      font-family: inherit;
-    }
+    .filter-bar { max-width: 1100px; margin: 0 auto 20px; padding: 0 24px; display: flex; align-items: center; gap: 12px; flex-wrap: wrap; position: relative; z-index: 1; }
+    .filter-bar label { font-size: 0.78rem; color: var(--text-muted); white-space: nowrap; }
+    .filter-select { background: var(--surface); border: 1px solid var(--border); color: var(--text); font-size: 0.82rem; padding: 7px 12px; border-radius: 6px; cursor: pointer; font-family: inherit; }
     .filter-select:focus { outline: 1px solid var(--gold); }
-    .search-input {
-      background: var(--surface);
-      border: 1px solid var(--border);
-      color: var(--text);
-      font-size: 0.82rem;
-      padding: 7px 14px;
-      border-radius: 6px;
-      font-family: inherit;
-      width: 200px;
-    }
+    .search-input { background: var(--surface); border: 1px solid var(--border); color: var(--text); font-size: 0.82rem; padding: 7px 14px; border-radius: 6px; font-family: inherit; width: 200px; }
     .search-input::placeholder { color: var(--text-dim); }
     .search-input:focus { outline: 1px solid var(--gold); }
-    .count-badge {
-      margin-left: auto;
-      font-size: 0.75rem;
-      color: var(--text-muted);
-    }
+    .count-badge { margin-left: auto; font-size: 0.75rem; color: var(--text-muted); }
 
-    /* 게시글 목록 */
-    .list-wrap {
-      max-width: 1100px;
-      margin: 0 auto;
-      padding: 0 24px 60px;
-      position: relative;
-      z-index: 1;
-    }
-    .post-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-      gap: 16px;
-    }
-
-    .post-card {
-      background: var(--surface);
-      border: 1px solid var(--border);
-      border-radius: 10px;
-      padding: 20px;
-      cursor: pointer;
-      transition: border-color 0.2s, transform 0.2s, box-shadow 0.2s;
-      position: relative;
-      overflow: hidden;
-    }
-    .post-card::before {
-      content: '';
-      position: absolute;
-      top: 0; left: 0; right: 0;
-      height: 2px;
-      background: linear-gradient(90deg, transparent, var(--gold), transparent);
-      opacity: 0;
-      transition: opacity 0.3s;
-    }
-    .post-card:hover {
-      border-color: rgba(201,168,76,0.4);
-      transform: translateY(-2px);
-      box-shadow: 0 8px 28px rgba(0,0,0,0.4), 0 0 0 1px rgba(201,168,76,0.1);
-    }
+    /* 카드 */
+    .list-wrap { max-width: 1100px; margin: 0 auto; padding: 0 24px 60px; position: relative; z-index: 1; }
+    .post-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 16px; }
+    .post-card { background: var(--surface); border: 1px solid var(--border); border-radius: 10px; padding: 20px; cursor: pointer; transition: border-color 0.2s, transform 0.2s, box-shadow 0.2s; position: relative; overflow: hidden; }
+    .post-card::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 2px; background: linear-gradient(90deg, transparent, var(--gold), transparent); opacity: 0; transition: opacity 0.3s; }
+    .post-card:hover { border-color: rgba(201,168,76,0.4); transform: translateY(-2px); box-shadow: 0 8px 28px rgba(0,0,0,0.4); }
     .post-card:hover::before { opacity: 1; }
-
-    .card-server {
-      display: inline-block;
-      background: var(--gold-dim);
-      color: var(--gold);
-      font-size: 0.7rem;
-      font-weight: 700;
-      padding: 3px 9px;
-      border-radius: 4px;
-      letter-spacing: 0.05em;
-      margin-bottom: 10px;
-    }
-    .card-title {
-      font-family: 'Noto Serif KR', serif;
-      font-size: 1rem;
-      font-weight: 600;
-      color: var(--text);
-      margin-bottom: 6px;
-      line-height: 1.4;
-    }
-    .card-memo {
-      font-size: 0.8rem;
-      color: var(--text-muted);
-      line-height: 1.5;
-      display: -webkit-box;
-      -webkit-line-clamp: 2;
-      -webkit-box-orient: vertical;
-      overflow: hidden;
-    }
-    .card-footer {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      margin-top: 16px;
-      padding-top: 14px;
-      border-top: 1px solid var(--border);
-    }
-    .card-date {
-      font-size: 0.72rem;
-      color: var(--text-dim);
-    }
-    .card-kakao-btn {
-      display: inline-flex;
-      align-items: center;
-      gap: 6px;
-      background: #FEE500;
-      color: #000;
-      font-size: 0.72rem;
-      font-weight: 700;
-      padding: 5px 11px;
-      border-radius: 5px;
-      text-decoration: none;
-      transition: opacity 0.15s;
-    }
+    .card-top { display: flex; align-items: center; justify-content: space-between; margin-bottom: 10px; }
+    .card-server { display: inline-block; background: var(--gold-dim); color: var(--gold); font-size: 0.7rem; font-weight: 700; padding: 3px 9px; border-radius: 4px; letter-spacing: 0.05em; }
+    .card-price { font-size: 0.82rem; font-weight: 700; color: var(--gold); }
+    .card-title { font-family: 'Noto Serif KR', serif; font-size: 1rem; font-weight: 600; color: var(--text); margin-bottom: 6px; line-height: 1.4; }
+    .card-memo { font-size: 0.8rem; color: var(--text-muted); line-height: 1.5; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+    .expire-bar-wrap { display: flex; align-items: center; gap: 8px; margin-top: 10px; }
+    .expire-bar { flex: 1; height: 3px; background: var(--border); border-radius: 2px; overflow: hidden; }
+    .expire-bar-fill { height: 100%; border-radius: 2px; }
+    .expire-text { font-size: 0.68rem; color: var(--text-dim); white-space: nowrap; }
+    .card-footer { display: flex; align-items: center; justify-content: space-between; margin-top: 14px; padding-top: 12px; border-top: 1px solid var(--border); }
+    .card-meta { display: flex; align-items: center; gap: 8px; }
+    .card-date { font-size: 0.72rem; color: var(--text-dim); }
+    .card-views { font-size: 0.72rem; color: var(--text-dim); }
+    .card-kakao-btn { display: inline-flex; align-items: center; gap: 6px; background: #FEE500; color: #000; font-size: 0.72rem; font-weight: 700; padding: 5px 11px; border-radius: 5px; text-decoration: none; transition: opacity 0.15s; }
     .card-kakao-btn:hover { opacity: 0.85; }
-    .kakao-icon {
-      width: 14px; height: 14px;
-      background: #000;
-      border-radius: 50%;
-      display: inline-block;
-    }
 
-    /* 남은 시간 */
-    .expire-bar-wrap {
-      margin-top: 10px;
-      display: flex;
-      align-items: center;
-      gap: 8px;
-    }
-    .expire-bar {
-      flex: 1;
-      height: 3px;
-      background: var(--border);
-      border-radius: 2px;
-      overflow: hidden;
-    }
-    .expire-bar-fill {
-      height: 100%;
-      border-radius: 2px;
-      transition: width 0.3s;
-    }
-    .expire-text {
-      font-size: 0.68rem;
-      color: var(--text-dim);
-      white-space: nowrap;
-    }
-
-    /* 빈 상태 */
-    .empty-state {
-      text-align: center;
-      padding: 80px 0;
-      color: var(--text-dim);
-      grid-column: 1 / -1;
-    }
-    .empty-state svg { opacity: 0.3; margin-bottom: 16px; }
+    .empty-state { text-align: center; padding: 80px 0; color: var(--text-dim); grid-column: 1 / -1; }
     .empty-state p { font-size: 0.9rem; }
-
-    /* 로딩 */
-    .loading {
-      text-align: center;
-      padding: 60px;
-      color: var(--text-muted);
-      grid-column: 1 / -1;
-      font-size: 0.85rem;
-    }
-    .spinner {
-      width: 32px; height: 32px;
-      border: 2px solid var(--border);
-      border-top-color: var(--gold);
-      border-radius: 50%;
-      animation: spin 0.8s linear infinite;
-      margin: 0 auto 16px;
-    }
+    .loading { text-align: center; padding: 60px; color: var(--text-muted); grid-column: 1 / -1; font-size: 0.85rem; }
+    .spinner { width: 32px; height: 32px; border: 2px solid var(--border); border-top-color: var(--gold); border-radius: 50%; animation: spin 0.8s linear infinite; margin: 0 auto 16px; }
     @keyframes spin { to { transform: rotate(360deg); } }
 
     /* 모달 */
-    .modal-overlay {
-      display: none;
-      position: fixed;
-      inset: 0;
-      background: rgba(0,0,0,0.75);
-      z-index: 100;
-      align-items: center;
-      justify-content: center;
-      padding: 20px;
-    }
+    .modal-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.75); z-index: 100; align-items: center; justify-content: center; padding: 20px; }
     .modal-overlay.open { display: flex; }
-    .modal {
-      background: var(--surface2);
-      border: 1px solid var(--border);
-      border-radius: 12px;
-      padding: 28px;
-      width: 100%;
-      max-width: 460px;
-      position: relative;
-      animation: modalIn 0.2s ease;
-    }
+    .modal { background: var(--surface2); border: 1px solid var(--border); border-radius: 12px; padding: 28px; width: 100%; max-width: 460px; position: relative; animation: modalIn 0.2s ease; }
     @keyframes modalIn { from { opacity: 0; transform: scale(0.95); } to { opacity: 1; transform: scale(1); } }
-    .modal-close {
-      position: absolute;
-      top: 16px; right: 16px;
-      background: none;
-      border: none;
-      color: var(--text-muted);
-      font-size: 1.2rem;
-      cursor: pointer;
-      line-height: 1;
-    }
+    .modal-close { position: absolute; top: 16px; right: 16px; background: none; border: none; color: var(--text-muted); font-size: 1.2rem; cursor: pointer; }
     .modal-close:hover { color: var(--text); }
-    .modal h2 {
-      font-family: 'Noto Serif KR', serif;
-      font-size: 1.15rem;
-      color: var(--gold);
-      margin-bottom: 18px;
-    }
-    .modal-server-badge {
-      display: inline-block;
-      background: var(--gold-dim);
-      color: var(--gold);
-      font-size: 0.75rem;
-      font-weight: 700;
-      padding: 4px 10px;
-      border-radius: 4px;
-      margin-bottom: 12px;
-    }
-    .modal-item-name {
-      font-family: 'Noto Serif KR', serif;
-      font-size: 1.3rem;
-      font-weight: 900;
-      color: var(--text);
-      margin-bottom: 12px;
-    }
-    .modal-memo {
-      font-size: 0.85rem;
-      color: var(--text-muted);
-      line-height: 1.7;
-      margin-bottom: 20px;
-      white-space: pre-wrap;
-    }
-    .modal-kakao {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      background: #FEE500;
-      color: #000;
-      font-weight: 700;
-      font-size: 0.9rem;
-      padding: 13px 20px;
-      border-radius: 8px;
-      text-decoration: none;
-      justify-content: center;
-      transition: opacity 0.2s;
-    }
+    .modal h2 { font-family: 'Noto Serif KR', serif; font-size: 1.15rem; color: var(--gold); margin-bottom: 18px; }
+    .modal-server-badge { display: inline-block; background: var(--gold-dim); color: var(--gold); font-size: 0.75rem; font-weight: 700; padding: 4px 10px; border-radius: 4px; margin-bottom: 8px; }
+    .modal-price { font-size: 1.1rem; font-weight: 700; color: var(--gold); margin-bottom: 8px; }
+    .modal-item-name { font-family: 'Noto Serif KR', serif; font-size: 1.3rem; font-weight: 900; color: var(--text); margin-bottom: 12px; }
+    .modal-memo { font-size: 0.85rem; color: var(--text-muted); line-height: 1.7; margin-bottom: 20px; white-space: pre-wrap; }
+    .modal-kakao { display: flex; align-items: center; gap: 10px; background: #FEE500; color: #000; font-weight: 700; font-size: 0.9rem; padding: 13px 20px; border-radius: 8px; text-decoration: none; justify-content: center; transition: opacity 0.2s; }
     .modal-kakao:hover { opacity: 0.85; }
-    .modal-divider {
-      height: 1px;
-      background: var(--border);
-      margin: 16px 0;
-    }
-    .modal-meta {
-      font-size: 0.72rem;
-      color: var(--text-dim);
-    }
-
-    /* 비밀번호 입력 모달 */
-    .pw-input {
-      width: 100%;
-      background: var(--bg);
-      border: 1px solid var(--border);
-      color: var(--text);
-      font-size: 0.9rem;
-      padding: 10px 14px;
-      border-radius: 6px;
-      margin: 12px 0;
-      font-family: inherit;
-    }
+    .modal-share { display: flex; align-items: center; justify-content: center; gap: 8px; background: var(--surface); border: 1px solid var(--border); color: var(--text-muted); font-size: 0.82rem; font-weight: 500; padding: 10px 16px; border-radius: 8px; cursor: pointer; transition: border-color 0.2s, color 0.2s; width: 100%; margin-top: 8px; font-family: inherit; }
+    .modal-share:hover { border-color: var(--gold); color: var(--gold); }
+    .modal-divider { height: 1px; background: var(--border); margin: 16px 0; }
+    .modal-meta { font-size: 0.72rem; color: var(--text-dim); }
+    .modal-views { font-size: 0.72rem; color: var(--text-dim); margin-top: 4px; }
+    .pw-input { width: 100%; background: var(--bg); border: 1px solid var(--border); color: var(--text); font-size: 0.9rem; padding: 10px 14px; border-radius: 6px; margin: 12px 0; font-family: inherit; }
     .pw-input:focus { outline: 1px solid var(--gold); }
-    .btn-danger {
-      background: var(--red);
-      color: #fff;
-      border: none;
-      padding: 10px 20px;
-      border-radius: 6px;
-      cursor: pointer;
-      font-family: inherit;
-      font-weight: 700;
-      font-size: 0.85rem;
-      transition: opacity 0.2s;
-    }
+    .btn-danger { background: var(--red); color: #fff; border: none; padding: 10px 20px; border-radius: 6px; cursor: pointer; font-family: inherit; font-weight: 700; font-size: 0.85rem; transition: opacity 0.2s; }
     .btn-danger:hover { opacity: 0.85; }
-    .btn-secondary {
-      background: var(--surface);
-      color: var(--text-muted);
-      border: 1px solid var(--border);
-      padding: 10px 20px;
-      border-radius: 6px;
-      cursor: pointer;
-      font-family: inherit;
-      font-size: 0.85rem;
-      transition: border-color 0.2s;
-    }
-    .btn-secondary:hover { border-color: var(--text-muted); }
-    .modal-actions {
-      display: flex;
-      gap: 10px;
-      justify-content: flex-end;
-      margin-top: 4px;
-    }
-    .error-msg {
-      font-size: 0.78rem;
-      color: var(--red);
-      margin-top: -6px;
-      margin-bottom: 8px;
-    }
+    .btn-secondary { background: var(--surface); color: var(--text-muted); border: 1px solid var(--border); padding: 10px 20px; border-radius: 6px; cursor: pointer; font-family: inherit; font-size: 0.85rem; }
+    .modal-actions { display: flex; gap: 10px; justify-content: flex-end; margin-top: 4px; }
+    .error-msg { font-size: 0.78rem; color: var(--red); margin-top: -6px; margin-bottom: 8px; }
 
-    /* 푸터 */
-    footer {
-      position: relative;
-      z-index: 1;
-      border-top: 1px solid var(--border);
-      text-align: center;
-      padding: 24px;
-      font-size: 0.72rem;
-      color: var(--text-dim);
-    }
+    footer { position: relative; z-index: 1; border-top: 1px solid var(--border); text-align: center; padding: 24px; font-size: 0.72rem; color: var(--text-dim); }
 
     @media (max-width: 600px) {
       .post-grid { grid-template-columns: 1fr; }
       .search-input { width: 140px; }
+      .stats-grid { grid-template-columns: repeat(4, 1fr); }
     }
   </style>
 </head>
@@ -519,12 +152,15 @@
   <p>7일간 게시 · 오픈카카오톡으로 안전 거래</p>
 </div>
 
-<!-- 쿠팡파트너스 광고 영역 -->
+<!-- 서버별 통계 -->
+<div class="stats-wrap">
+  <div class="stats-grid" id="statsGrid"></div>
+</div>
+
+<!-- 광고 배너 -->
 <div class="ad-banner">
   <div class="ad-banner-inner" id="coupang-ad-top">
-    <!-- 아래 주석을 해제하고 쿠팡파트너스 코드를 붙여넣으세요 -->
-    <!-- <iframe src="https://ads-partners.coupang.com/widgets.html?id=YOUR_ID&template=..." ... ></iframe> -->
-    <span>오늘 하루도 즐거운 하루 되세요</span>
+    <span>광고 영역 — 오늘 하루도 즐거운 하루 되세요</span>
   </div>
 </div>
 
@@ -532,7 +168,7 @@
   <label>서버</label>
   <select class="filter-select" id="serverFilter">
     <option value="">전체 서버</option>
-          <option>오딘1</option>
+      <option>오딘1</option>
           <option>오딘2</option>
           <option>오딘3</option>
           <option>오딘4</option>
@@ -630,10 +266,7 @@
 
 <div class="list-wrap">
   <div class="post-grid" id="postGrid">
-    <div class="loading">
-      <div class="spinner"></div>
-      <p>게시글을 불러오는 중…</p>
-    </div>
+    <div class="loading"><div class="spinner"></div><p>게시글을 불러오는 중…</p></div>
   </div>
 </div>
 
@@ -642,6 +275,7 @@
   <div class="modal">
     <button class="modal-close" onclick="closeModal()">✕</button>
     <div class="modal-server-badge" id="modalServer"></div>
+    <div class="modal-price" id="modalPrice" style="display:none"></div>
     <div class="modal-item-name" id="modalItemName"></div>
     <div class="modal-memo" id="modalMemo"></div>
     <div class="modal-divider"></div>
@@ -649,15 +283,19 @@
       <svg width="20" height="20" viewBox="0 0 24 24" fill="none"><ellipse cx="12" cy="11" rx="9" ry="7.5" fill="#000"/><path d="M7 13.5c1.5 2 7.5 2 9 0" stroke="#FEE500" stroke-width="1.5" stroke-linecap="round"/><circle cx="8.5" cy="10" r="1.2" fill="#FEE500"/><circle cx="15.5" cy="10" r="1.2" fill="#FEE500"/></svg>
       카카오 오픈채팅으로 연락하기
     </a>
+    <button class="modal-share" onclick="shareKakao()">🔗 이 게시글 카카오톡으로 공유하기</button>
     <div class="modal-divider"></div>
     <div style="display:flex;justify-content:space-between;align-items:center">
-      <div class="modal-meta" id="modalMeta"></div>
+      <div>
+        <div class="modal-meta" id="modalMeta"></div>
+        <div class="modal-views" id="modalViews"></div>
+      </div>
       <button class="btn-danger" onclick="openDeleteModal()" style="font-size:0.75rem;padding:6px 12px">삭제</button>
     </div>
   </div>
 </div>
 
-<!-- 삭제 비밀번호 모달 -->
+<!-- 삭제 모달 -->
 <div class="modal-overlay" id="deleteModal">
   <div class="modal" style="max-width:360px">
     <button class="modal-close" onclick="closeDeleteModal()">✕</button>
@@ -672,22 +310,19 @@
   </div>
 </div>
 
-<!-- Firebase SDK -->
 <script type="module">
   import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
-  import { getFirestore, collection, query, where, orderBy, getDocs, doc, deleteDoc, Timestamp }
+  import { getFirestore, collection, query, where, orderBy, getDocs, doc, deleteDoc, updateDoc, increment, Timestamp }
     from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
 
-  // ★ firebase-config.js 대신 여기에 직접 입력 (GitHub Pages는 모듈 import 제한 있음)
   // TODO: 아래 값을 본인의 Firebase 프로젝트 설정으로 교체하세요
   const firebaseConfig = {
-  apiKey: "AIzaSyANMjDYYp9QChQbagktNVPtbToNX-a0-oM",
-  authDomain: "opensales-5a6fc.firebaseapp.com",
-  projectId: "opensales-5a6fc",
-  storageBucket: "opensales-5a6fc.firebasestorage.app",
-  messagingSenderId: "467560178074",
-  appId: "1:467560178074:web:afaaef2ac8201877e05a23",
-  measurementId: "G-BL0Z91W4VJ"
+    apiKey: "YOUR_API_KEY",
+    authDomain: "YOUR_PROJECT.firebaseapp.com",
+    projectId: "YOUR_PROJECT_ID",
+    storageBucket: "YOUR_PROJECT.appspot.com",
+    messagingSenderId: "YOUR_SENDER_ID",
+    appId: "YOUR_APP_ID"
   };
 
   const app = initializeApp(firebaseConfig);
@@ -695,53 +330,68 @@
 
   let allPosts = [];
   let currentPostId = null;
+  let currentPost = null;
 
-  // ─── 데이터 로드 ───────────────────────────────
+  const SERVERS = ['아스가르드','미드가르드','요툰헤임','니플헤임','무스펠헤임','알프헤임','바나헤임','헬헤임'];
+
+  // 서버별 통계
+  function renderStats(posts) {
+    const grid = document.getElementById('statsGrid');
+    const counts = {};
+    SERVERS.forEach(s => counts[s] = 0);
+    posts.forEach(p => { if (counts[p.server] !== undefined) counts[p.server]++; });
+    grid.innerHTML = SERVERS.map(s => `
+      <div class="stat-card" onclick="filterByServer('${s}')" id="stat-${s}">
+        <div class="stat-server">${s}</div>
+        <div class="stat-count">${counts[s]}</div>
+        <div class="stat-label">건</div>
+      </div>`).join('');
+  }
+
+  window.filterByServer = function(server) {
+    const select = document.getElementById('serverFilter');
+    select.value = select.value === server ? '' : server;
+    document.querySelectorAll('.stat-card').forEach(c => c.classList.remove('active'));
+    if (select.value) document.getElementById('stat-' + server)?.classList.add('active');
+    applyFilter();
+  };
+
+  // 데이터 로드
   async function loadPosts() {
-    const grid = document.getElementById('postGrid');
     try {
       const now = Timestamp.now();
-      const sevenDaysAgo = Timestamp.fromMillis(now.toMillis() - 7 * 24 * 60 * 60 * 1000);
-
-      const q = query(
-        collection(db, "posts"),
-        where("createdAt", ">=", sevenDaysAgo),
-        orderBy("createdAt", "desc")
-      );
+      const sevenDaysAgo = Timestamp.fromMillis(now.toMillis() - 7*24*60*60*1000);
+      const q = query(collection(db,"posts"), where("createdAt",">=",sevenDaysAgo), orderBy("createdAt","desc"));
       const snap = await getDocs(q);
       allPosts = snap.docs.map(d => ({ id: d.id, ...d.data() }));
+      renderStats(allPosts);
       renderPosts(allPosts);
-    } catch (e) {
+    } catch(e) {
       console.error(e);
-      grid.innerHTML = `<div class="empty-state"><p>데이터를 불러오지 못했습니다.<br/>Firebase 설정을 확인해주세요.</p></div>`;
+      document.getElementById('postGrid').innerHTML = `<div class="empty-state"><p>데이터를 불러오지 못했습니다.<br/>Firebase 설정을 확인해주세요.</p></div>`;
     }
   }
 
   function renderPosts(posts) {
     const grid = document.getElementById('postGrid');
     document.getElementById('countBadge').textContent = posts.length + '건';
-
     if (posts.length === 0) {
-      grid.innerHTML = `<div class="empty-state">
-        <svg width="48" height="48" fill="none" viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="14" rx="2" stroke="currentColor" stroke-width="1.5"/><path d="M3 9h18" stroke="currentColor" stroke-width="1.5"/></svg>
-        <p>등록된 판매글이 없습니다.</p>
-      </div>`;
+      grid.innerHTML = `<div class="empty-state"><p>등록된 판매글이 없습니다.</p></div>`;
       return;
     }
-
     grid.innerHTML = posts.map(p => {
       const created = p.createdAt?.toDate ? p.createdAt.toDate() : new Date(p.createdAt);
-      const expire = new Date(created.getTime() + 7 * 24 * 60 * 60 * 1000);
-      const now = new Date();
-      const remainMs = expire - now;
-      const remainH = Math.floor(remainMs / (1000 * 60 * 60));
-      const pct = Math.max(0, Math.min(100, (remainMs / (7 * 24 * 60 * 60 * 1000)) * 100));
+      const remainMs = new Date(created.getTime() + 7*24*60*60*1000) - new Date();
+      const remainH = Math.floor(remainMs / (1000*60*60));
+      const pct = Math.max(0, Math.min(100, (remainMs / (7*24*60*60*1000))*100));
       const barColor = pct > 50 ? '#c9a84c' : pct > 20 ? '#e8893a' : '#c94c4c';
-      const remainLabel = remainH >= 24 ? Math.floor(remainH/24) + '일 남음' : remainH + '시간 남음';
-      const dateStr = created.toLocaleDateString('ko-KR', {month:'short', day:'numeric', hour:'2-digit', minute:'2-digit'});
-
+      const remainLabel = remainH >= 24 ? Math.floor(remainH/24)+'일 남음' : remainH+'시간 남음';
+      const dateStr = created.toLocaleDateString('ko-KR',{month:'short',day:'numeric',hour:'2-digit',minute:'2-digit'});
       return `<div class="post-card" onclick="openDetail('${p.id}')">
-        <div class="card-server">${esc(p.server)}</div>
+        <div class="card-top">
+          <div class="card-server">${esc(p.server)}</div>
+          ${p.price ? `<span class="card-price">${esc(p.price)}</span>` : ''}
+        </div>
         <div class="card-title">${esc(p.itemName)}</div>
         ${p.memo ? `<div class="card-memo">${esc(p.memo)}</div>` : ''}
         <div class="expire-bar-wrap">
@@ -749,10 +399,11 @@
           <span class="expire-text">${remainLabel}</span>
         </div>
         <div class="card-footer">
-          <span class="card-date">${dateStr}</span>
-          <a class="card-kakao-btn" href="${esc(p.kakaoUrl)}" target="_blank" rel="noopener" onclick="event.stopPropagation()">
-            💬 채팅
-          </a>
+          <div class="card-meta">
+            <span class="card-date">${dateStr}</span>
+            <span class="card-views">👁 ${p.views||0}</span>
+          </div>
+          <a class="card-kakao-btn" href="${esc(p.kakaoUrl)}" target="_blank" rel="noopener" onclick="event.stopPropagation()">💬 채팅</a>
         </div>
       </div>`;
     }).join('');
@@ -763,89 +414,64 @@
     return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
   }
 
-  // ─── 필터 ──────────────────────────────────────
   function applyFilter() {
     const sv = document.getElementById('serverFilter').value;
     const kw = document.getElementById('searchInput').value.trim().toLowerCase();
-    const filtered = allPosts.filter(p =>
-      (!sv || p.server === sv) &&
-      (!kw || p.itemName?.toLowerCase().includes(kw) || p.memo?.toLowerCase().includes(kw))
-    );
-    renderPosts(filtered);
+    renderPosts(allPosts.filter(p => (!sv||p.server===sv) && (!kw||p.itemName?.toLowerCase().includes(kw)||p.memo?.toLowerCase().includes(kw))));
   }
   document.getElementById('serverFilter').addEventListener('change', applyFilter);
   document.getElementById('searchInput').addEventListener('input', applyFilter);
 
-  // ─── 상세 모달 ─────────────────────────────────
-  window.openDetail = function(id) {
+  // 상세 모달 + 조회수
+  window.openDetail = async function(id) {
     const p = allPosts.find(x => x.id === id);
     if (!p) return;
-    currentPostId = id;
+    currentPostId = id; currentPost = p;
     document.getElementById('modalServer').textContent = p.server;
     document.getElementById('modalItemName').textContent = p.itemName;
     document.getElementById('modalMemo').textContent = p.memo || '상세 설명 없음';
     document.getElementById('modalKakao').href = p.kakaoUrl;
-
+    const priceEl = document.getElementById('modalPrice');
+    if (p.price) { priceEl.textContent = p.price; priceEl.style.display = 'block'; } else { priceEl.style.display = 'none'; }
     const created = p.createdAt?.toDate ? p.createdAt.toDate() : new Date(p.createdAt);
-    const expire = new Date(created.getTime() + 7 * 24 * 60 * 60 * 1000);
-    document.getElementById('modalMeta').textContent =
-      '등록 ' + created.toLocaleDateString('ko-KR') + ' · 만료 ' + expire.toLocaleDateString('ko-KR');
-
+    const expire = new Date(created.getTime() + 7*24*60*60*1000);
+    document.getElementById('modalMeta').textContent = '등록 '+created.toLocaleDateString('ko-KR')+' · 만료 '+expire.toLocaleDateString('ko-KR');
+    try { await updateDoc(doc(db,"posts",id), {views: increment(1)}); p.views = (p.views||0)+1; } catch(e) {}
+    document.getElementById('modalViews').textContent = '👁 조회 '+(p.views||0)+'회';
     document.getElementById('detailModal').classList.add('open');
   };
 
-  window.closeModal = function() {
-    document.getElementById('detailModal').classList.remove('open');
+  window.closeModal = function() { document.getElementById('detailModal').classList.remove('open'); };
+  document.getElementById('detailModal').addEventListener('click', function(e) { if (e.target===this) closeModal(); });
+
+  // 카카오 공유
+  window.shareKakao = function() {
+    if (!currentPost) return;
+    const text = `[오딘 거래소] ${currentPost.server} 서버\n${currentPost.itemName}${currentPost.price ? '\n가격: '+currentPost.price : ''}\n\n👉 https://highersolutionkr.github.io/odin-market`;
+    if (navigator.share) { navigator.share({title:'오딘 거래소', text}); }
+    else { navigator.clipboard.writeText(text).then(() => alert('클립보드에 복사됐어요!\n카카오톡에 붙여넣기 해주세요.')); }
   };
 
-  // 모달 외부 클릭 닫기
-  document.getElementById('detailModal').addEventListener('click', function(e) {
-    if (e.target === this) closeModal();
-  });
-
-  // ─── 삭제 ──────────────────────────────────────
-  window.openDeleteModal = function() {
-    document.getElementById('deletePwInput').value = '';
-    document.getElementById('deleteError').style.display = 'none';
-    document.getElementById('deleteModal').classList.add('open');
-  };
-
-  window.closeDeleteModal = function() {
-    document.getElementById('deleteModal').classList.remove('open');
-  };
-
+  // 삭제
+  window.openDeleteModal = function() { document.getElementById('deletePwInput').value=''; document.getElementById('deleteError').style.display='none'; document.getElementById('deleteModal').classList.add('open'); };
+  window.closeDeleteModal = function() { document.getElementById('deleteModal').classList.remove('open'); };
   window.confirmDelete = async function() {
     const pw = document.getElementById('deletePwInput').value;
-    const p = allPosts.find(x => x.id === currentPostId);
+    const p = allPosts.find(x => x.id===currentPostId);
     if (!p) return;
-
-    if (p.password !== pw) {
-      document.getElementById('deleteError').style.display = 'block';
-      return;
-    }
-
+    if (p.password !== pw) { document.getElementById('deleteError').style.display='block'; return; }
     try {
-      await deleteDoc(doc(db, "posts", currentPostId));
-      allPosts = allPosts.filter(x => x.id !== currentPostId);
-      renderPosts(allPosts);
-      closeDeleteModal();
-      closeModal();
-    } catch(e) {
-      alert('삭제 중 오류가 발생했습니다.');
-    }
+      await deleteDoc(doc(db,"posts",currentPostId));
+      allPosts = allPosts.filter(x => x.id!==currentPostId);
+      renderStats(allPosts); renderPosts(allPosts);
+      closeDeleteModal(); closeModal();
+    } catch(e) { alert('삭제 중 오류가 발생했습니다.'); }
   };
+  document.getElementById('deleteModal').addEventListener('click', function(e) { if (e.target===this) closeDeleteModal(); });
 
-  document.getElementById('deleteModal').addEventListener('click', function(e) {
-    if (e.target === this) closeDeleteModal();
-  });
-
-  // ─── 초기화 ────────────────────────────────────
   loadPosts();
 </script>
 
-<footer>
-  오딘 거래소 · 비공식 팬 사이트 · 거래 사기 피해에 대해 운영자는 책임지지 않습니다.
-</footer>
-
+<footer>오딘 거래소 · 비공식 팬 사이트 · 거래 사기 피해에 대해 운영자는 책임지지 않습니다.</footer>
 </body>
 </html>
