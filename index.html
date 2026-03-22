@@ -317,12 +317,13 @@
 
   // TODO: 아래 값을 본인의 Firebase 프로젝트 설정으로 교체하세요
   const firebaseConfig = {
-    apiKey: "YOUR_API_KEY",
-    authDomain: "YOUR_PROJECT.firebaseapp.com",
-    projectId: "YOUR_PROJECT_ID",
-    storageBucket: "YOUR_PROJECT.appspot.com",
-    messagingSenderId: "YOUR_SENDER_ID",
-    appId: "YOUR_APP_ID"
+  apiKey: "AIzaSyANMjDYYp9QChQbagktNVPtbToNX-a0-oM",
+  authDomain: "opensales-5a6fc.firebaseapp.com",
+  projectId: "opensales-5a6fc",
+  storageBucket: "opensales-5a6fc.firebasestorage.app",
+  messagingSenderId: "467560178074",
+  appId: "1:467560178074:web:afaaef2ac8201877e05a23",
+  measurementId: "G-BL0Z91W4VJ"
   };
 
   const app = initializeApp(firebaseConfig);
@@ -332,7 +333,16 @@
   let currentPostId = null;
   let currentPost = null;
 
-  const SERVERS = ['아스가르드','미드가르드','요툰헤임','니플헤임','무스펠헤임','알프헤임','바나헤임','헬헤임'];
+  const SERVERS = ['오딘1','오딘2','오딘3','오딘4','오딘5','오딘6','오딘7','오딘8','오딘9'
+'토르1','토르2','토르3','토르4','토르5','토르6','토르7','토르8','토르9'
+'로키1','로키2','로키3','로키4','로키5','로키6','로키7','로키8','로키9'
+'프레이야1','프레이야2','프레이야3','프레이야4','프레이야5','프레이야6','프레이야7','프레이야8','프레이야9'
+'헤임달1','헤임달2','헤임달3','헤임달4','헤임달5','헤임달6','헤임달7','헤임달8','헤임달9'
+'티르1','티르2','티르3','티르4','티르5','티르6','티르7','티르8','티르9'
+'발두르1','발두르2','발두르3','발두르4','발두르5','발두르6','발두르7','발두르8','발두르9'
+'이둔1','이둔2','이둔3','이둔4','이둔5','이둔6','이둔7','이둔8','이둔9'
+'에기르1','에기르2','에기르3','에기르4','에기르5','에기르6','에기르7','에기르8','에기르9'
+'뇨르드1','뇨르드2','뇨르드3','뇨르드4','뇨르드5','뇨르드6','뇨르드7','뇨르드8','뇨르드9'];
 
   // 서버별 통계
   function renderStats(posts) {
