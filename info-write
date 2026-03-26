@@ -1,0 +1,314 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>정보 작성 — 관리자</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+KR:wght@400;600;900&family=Noto+Sans+KR:wght@300;400;500;700&display=swap" rel="stylesheet"/>
+  <style>
+    :root {
+      --bg: #0a0c10;
+      --surface: #111318;
+      --surface2: #181c24;
+      --border: #252a36;
+      --gold: #c9a84c;
+      --gold-light: #e8c96a;
+      --gold-dim: rgba(201,168,76,0.15);
+      --red: #c94c4c;
+      --green: #4caf82;
+      --blue: #4c8ec9;
+      --blue-dim: rgba(76,142,201,0.15);
+      --green-dim: rgba(76,175,130,0.15);
+      --purple: #9b6fc9;
+      --purple-dim: rgba(155,111,201,0.15);
+      --text: #e8e2d4;
+      --text-muted: #7a7565;
+      --text-dim: #4a4840;
+      --glow: rgba(201,168,76,0.3);
+    }
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    body { background: var(--bg); color: var(--text); font-family: 'Noto Sans KR', sans-serif; min-height: 100vh; }
+    body::before { content: ''; position: fixed; inset: 0; background: radial-gradient(ellipse 80% 50% at 50% -10%, rgba(201,168,76,0.06) 0%, transparent 60%); pointer-events: none; z-index: 0; }
+
+    header { position: relative; z-index: 10; border-bottom: 1px solid var(--border); background: rgba(10,12,16,0.95); backdrop-filter: blur(12px); }
+    .header-inner { max-width: 1100px; margin: 0 auto; padding: 0 24px; height: 64px; display: flex; align-items: center; justify-content: space-between; }
+    .logo { font-family: 'Noto Serif KR', serif; font-weight: 900; font-size: 1.35rem; color: var(--gold); letter-spacing: 0.05em; text-decoration: none; display: flex; align-items: center; gap: 10px; }
+    .logo-rune { width: 32px; height: 32px; border: 1.5px solid var(--gold); border-radius: 6px; display: flex; align-items: center; justify-content: center; font-size: 0.85rem; box-shadow: 0 0 10px var(--glow); }
+    .header-right { display: flex; align-items: center; gap: 12px; }
+    .admin-badge { background: var(--gold-dim); color: var(--gold); font-size: 0.72rem; font-weight: 700; padding: 4px 10px; border-radius: 4px; }
+    .btn-back { color: var(--text-muted); font-size: 0.85rem; text-decoration: none; transition: color 0.2s; }
+    .btn-back:hover { color: var(--text); }
+
+    /* 접근 차단 */
+    .blocked { display: none; flex-direction: column; align-items: center; justify-content: center; min-height: 70vh; text-align: center; position: relative; z-index: 1; padding: 24px; }
+    .blocked h2 { font-family: 'Noto Serif KR', serif; font-size: 1.4rem; color: var(--red); margin-bottom: 12px; }
+    .blocked p { color: var(--text-muted); font-size: 0.9rem; margin-bottom: 24px; }
+    .btn-go { display: inline-block; background: var(--gold); color: #0a0c10; font-weight: 700; padding: 11px 28px; border-radius: 7px; text-decoration: none; transition: background 0.2s; font-size: 0.9rem; }
+    .btn-go:hover { background: var(--gold-light); }
+
+    /* 관리자 뷰 */
+    .admin-page { display: none; position: relative; z-index: 1; max-width: 800px; margin: 0 auto; padding: 44px 24px 80px; }
+
+    /* 게시글 목록 */
+    .section-title { font-size: 0.78rem; font-weight: 700; color: var(--text-muted); letter-spacing: 0.07em; text-transform: uppercase; margin-bottom: 14px; }
+    .manage-card { background: var(--surface); border: 1px solid var(--border); border-radius: 10px; padding: 20px; margin-bottom: 24px; }
+    .manage-item { display: flex; align-items: center; gap: 12px; padding: 10px 0; border-bottom: 1px solid var(--border); }
+    .manage-item:last-child { border-bottom: none; padding-bottom: 0; }
+    .manage-item:first-child { padding-top: 0; }
+    .item-cat { flex-shrink: 0; }
+    .cat-badge { display: inline-block; font-size: 0.68rem; font-weight: 700; padding: 3px 9px; border-radius: 4px; white-space: nowrap; }
+    .cat-badge.전략 { background: var(--gold-dim); color: var(--gold); }
+    .cat-badge.팁 { background: var(--green-dim); color: var(--green); }
+    .cat-badge.공략 { background: var(--blue-dim); color: var(--blue); }
+    .cat-badge.정보 { background: var(--purple-dim); color: var(--purple); }
+    .item-info { flex: 1; min-width: 0; }
+    .item-title { font-size: 0.88rem; color: var(--text); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+    .item-meta { font-size: 0.7rem; color: var(--text-dim); margin-top: 2px; }
+    .btn-del { flex-shrink: 0; background: none; border: 1px solid var(--border); color: var(--text-dim); font-size: 0.72rem; padding: 4px 10px; border-radius: 4px; cursor: pointer; font-family: inherit; transition: border-color 0.2s, color 0.2s; }
+    .btn-del:hover { border-color: var(--red); color: var(--red); }
+    .manage-empty { font-size: 0.82rem; color: var(--text-dim); text-align: center; padding: 20px 0; }
+
+    /* 작성 폼 */
+    .form-card { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 32px; }
+    .form-group { margin-bottom: 22px; }
+    .form-label { display: block; font-size: 0.8rem; font-weight: 700; color: var(--text-muted); letter-spacing: 0.07em; text-transform: uppercase; margin-bottom: 8px; }
+    .form-label .req { color: var(--gold); margin-left: 3px; }
+    .form-hint { font-size: 0.72rem; color: var(--text-dim); margin-top: 5px; }
+    .form-input, .form-textarea { width: 100%; background: var(--bg); border: 1px solid var(--border); color: var(--text); font-family: 'Noto Sans KR', sans-serif; font-size: 0.9rem; padding: 11px 14px; border-radius: 7px; transition: border-color 0.2s, box-shadow 0.2s; }
+    .form-input::placeholder, .form-textarea::placeholder { color: var(--text-dim); }
+    .form-input:focus, .form-textarea:focus { outline: none; border-color: var(--gold); box-shadow: 0 0 0 3px rgba(201,168,76,0.12); }
+    .form-textarea { resize: vertical; min-height: 300px; line-height: 1.85; }
+    .form-input.error, .form-textarea.error { border-color: var(--red); }
+    .field-err { font-size: 0.75rem; color: var(--red); margin-top: 5px; display: none; }
+    .field-err.show { display: block; }
+
+    /* 카테고리 선택 */
+    .cat-options { display: flex; gap: 8px; flex-wrap: wrap; }
+    .cat-radio { display: none; }
+    .cat-label {
+      display: inline-flex; align-items: center; gap: 5px;
+      background: var(--surface2); border: 1px solid var(--border);
+      color: var(--text-muted); font-size: 0.82rem; padding: 8px 16px;
+      border-radius: 20px; cursor: pointer; transition: all 0.2s; user-select: none;
+    }
+    .cat-label:hover { border-color: rgba(201,168,76,0.4); color: var(--text); }
+    #r-전략:checked ~ * .lbl-전략,
+    #r-전략:checked + .lbl-전략 { background: var(--gold-dim); border-color: var(--gold); color: var(--gold); font-weight: 700; }
+    #r-팁:checked + .lbl-팁 { background: var(--green-dim); border-color: var(--green); color: var(--green); font-weight: 700; }
+    #r-공략:checked + .lbl-공략 { background: var(--blue-dim); border-color: var(--blue); color: var(--blue); font-weight: 700; }
+    #r-정보:checked + .lbl-정보 { background: var(--purple-dim); border-color: var(--purple); color: var(--purple); font-weight: 700; }
+
+    .btn-submit { width: 100%; background: var(--gold); color: #0a0c10; font-family: 'Noto Sans KR', sans-serif; font-weight: 700; font-size: 1rem; padding: 14px; border: none; border-radius: 8px; cursor: pointer; transition: background 0.2s, box-shadow 0.2s, transform 0.1s; margin-top: 8px; }
+    .btn-submit:hover { background: var(--gold-light); box-shadow: 0 0 24px var(--glow); }
+    .btn-submit:active { transform: scale(0.98); }
+    .btn-submit:disabled { opacity: 0.5; cursor: not-allowed; box-shadow: none; }
+    .spinner-btn { display: inline-block; width: 16px; height: 16px; border: 2px solid rgba(0,0,0,0.3); border-top-color: #000; border-radius: 50%; animation: spin 0.7s linear infinite; vertical-align: middle; margin-right: 6px; }
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    .toast { display: none; background: var(--green-dim); border: 1px solid var(--green); color: var(--green); font-size: 0.88rem; padding: 12px 16px; border-radius: 8px; margin-bottom: 20px; text-align: center; }
+    .toast.show { display: block; }
+
+    footer { position: relative; z-index: 1; border-top: 1px solid var(--border); text-align: center; padding: 24px; font-size: 0.72rem; color: var(--text-dim); }
+  </style>
+</head>
+<body>
+
+<header>
+  <div class="header-inner">
+    <a href="info.html" class="logo">
+      <div class="logo-rune">⚔</div>
+      오딘 거래소
+    </a>
+    <div class="header-right">
+      <span class="admin-badge">관리자 모드</span>
+      <a href="info.html" class="btn-back">← 게시판으로</a>
+    </div>
+  </div>
+</header>
+
+<!-- 접근 차단 화면 -->
+<div class="blocked" id="blockedView">
+  <h2>접근 권한 없음</h2>
+  <p>관리자만 접근할 수 있는 페이지입니다.</p>
+  <a href="info.html" class="btn-go">게시판으로 이동</a>
+</div>
+
+<!-- 관리자 작성 화면 -->
+<div class="admin-page" id="adminPage">
+
+  <!-- 기존 게시글 관리 -->
+  <div class="section-title">게시글 관리</div>
+  <div class="manage-card">
+    <div id="manageList"><div class="manage-empty">불러오는 중…</div></div>
+  </div>
+
+  <!-- 작성 폼 -->
+  <div class="section-title">새 글 작성</div>
+  <div class="form-card">
+    <div class="toast" id="toast">게시글이 등록됐어요! ✓</div>
+
+    <form id="writeForm">
+      <!-- 카테고리 -->
+      <div class="form-group">
+        <label class="form-label">카테고리 <span class="req">*</span></label>
+        <div class="cat-options">
+          <input type="radio" name="cat" id="r-전략" class="cat-radio" value="전략" checked/>
+          <label for="r-전략" class="cat-label lbl-전략">⚔ 전략</label>
+          <input type="radio" name="cat" id="r-팁" class="cat-radio" value="팁"/>
+          <label for="r-팁" class="cat-label lbl-팁">💡 팁</label>
+          <input type="radio" name="cat" id="r-공략" class="cat-radio" value="공략"/>
+          <label for="r-공략" class="cat-label lbl-공략">🗺 공략</label>
+          <input type="radio" name="cat" id="r-정보" class="cat-radio" value="정보"/>
+          <label for="r-정보" class="cat-label lbl-정보">📋 정보</label>
+        </div>
+      </div>
+
+      <!-- 제목 -->
+      <div class="form-group">
+        <label class="form-label" for="postTitle">제목 <span class="req">*</span></label>
+        <input class="form-input" type="text" id="postTitle" placeholder="글 제목을 입력하세요" maxlength="80"/>
+        <div class="field-err" id="titleErr">제목을 입력해주세요.</div>
+      </div>
+
+      <!-- 본문 -->
+      <div class="form-group">
+        <label class="form-label" for="postBody">본문 <span class="req">*</span></label>
+        <textarea class="form-textarea" id="postBody" placeholder="내용을 자유롭게 작성하세요.&#10;줄바꿈과 이모지도 그대로 표시됩니다 😊" maxlength="10000"></textarea>
+        <div class="form-hint"><span id="bodyLen">0</span> / 10,000자</div>
+        <div class="field-err" id="bodyErr">본문을 입력해주세요.</div>
+      </div>
+
+      <button type="submit" class="btn-submit" id="submitBtn">게시글 등록하기</button>
+    </form>
+  </div>
+</div>
+
+<script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+  import { getFirestore, collection, query, orderBy, getDocs, addDoc, deleteDoc, doc, serverTimestamp }
+    from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+
+  const firebaseConfig = {
+    apiKey: "AIzaSyANMjDYYp9QChQbagktNVPtbToNX-a0-oM",
+    authDomain: "opensales-5a6fc.firebaseapp.com",
+    projectId: "opensales-5a6fc",
+    storageBucket: "opensales-5a6fc.firebasestorage.app",
+    messagingSenderId: "467560178074",
+    appId: "1:467560178074:web:afaaef2ac8201877e05a23",
+    measurementId: "G-BL0Z91W4VJ"
+  };
+
+  const app = initializeApp(firebaseConfig);
+  const db = getFirestore(app);
+
+  // ★ info.html 의 ADMIN_PW 와 동일하게 맞추세요
+  const ADMIN_PW = "Korea@12!@";
+
+  // ─── 인증 확인 ─────────────────────────────────
+  const token = new URLSearchParams(location.search).get('auth');
+  if (token !== btoa(ADMIN_PW)) {
+    document.getElementById('blockedView').style.display = 'flex';
+  } else {
+    document.getElementById('adminPage').style.display = 'block';
+    init();
+  }
+
+  let posts = [];
+
+  async function init() {
+    try {
+      const q = query(collection(db, "info_posts"), orderBy("createdAt", "desc"));
+      const snap = await getDocs(q);
+      posts = snap.docs.map(d => ({ id: d.id, ...d.data() }));
+      renderList();
+    } catch(e) { console.error(e); }
+  }
+
+  function esc(s) {
+    if (!s) return '';
+    return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+  }
+
+  const CAT_CSS = { 전략:'전략', 팁:'팁', 공략:'공략', 정보:'정보' };
+
+  function renderList() {
+    const el = document.getElementById('manageList');
+    if (posts.length === 0) {
+      el.innerHTML = '<div class="manage-empty">작성된 글이 없습니다.</div>';
+      return;
+    }
+    el.innerHTML = posts.map(p => {
+      const d = p.createdAt?.toDate ? p.createdAt.toDate() : new Date(p.createdAt);
+      return `<div class="manage-item">
+        <div class="item-cat"><span class="cat-badge ${esc(p.category)}">${esc(p.category)}</span></div>
+        <div class="item-info">
+          <div class="item-title">${esc(p.title)}</div>
+          <div class="item-meta">${d.toLocaleDateString('ko-KR',{month:'short',day:'numeric'})} · 👁 ${p.views||0}</div>
+        </div>
+        <button class="btn-del" onclick="delPost('${p.id}')">삭제</button>
+      </div>`;
+    }).join('');
+  }
+
+  window.delPost = async function(id) {
+    if (!confirm('정말 삭제할까요?')) return;
+    try {
+      await deleteDoc(doc(db, "info_posts", id));
+      posts = posts.filter(p => p.id !== id);
+      renderList();
+    } catch(e) { alert('삭제 중 오류가 발생했습니다.'); }
+  };
+
+  // ─── 글자수 카운터 ─────────────────────────────
+  document.getElementById('postBody').addEventListener('input', function() {
+    document.getElementById('bodyLen').textContent = this.value.length.toLocaleString();
+  });
+
+  // ─── 폼 제출 ───────────────────────────────────
+  document.getElementById('writeForm').addEventListener('submit', async function(e) {
+    e.preventDefault();
+
+    const title = document.getElementById('postTitle').value.trim();
+    const body = document.getElementById('postBody').value.trim();
+    const category = document.querySelector('input[name="cat"]:checked').value;
+
+    // 유효성
+    let ok = true;
+    ['titleErr','bodyErr'].forEach(id => document.getElementById(id).classList.remove('show'));
+    ['postTitle','postBody'].forEach(id => document.getElementById(id).classList.remove('error'));
+    if (!title) { document.getElementById('titleErr').classList.add('show'); document.getElementById('postTitle').classList.add('error'); ok = false; }
+    if (!body) { document.getElementById('bodyErr').classList.add('show'); document.getElementById('postBody').classList.add('error'); ok = false; }
+    if (!ok) return;
+
+    const btn = document.getElementById('submitBtn');
+    btn.disabled = true;
+    btn.innerHTML = '<span class="spinner-btn"></span> 등록 중…';
+
+    try {
+      const ref = await addDoc(collection(db, "info_posts"), {
+        category, title, body, views: 0, createdAt: serverTimestamp()
+      });
+      posts.unshift({ id: ref.id, category, title, body, views: 0, createdAt: { toDate: () => new Date() } });
+      renderList();
+      document.getElementById('postTitle').value = '';
+      document.getElementById('postBody').value = '';
+      document.getElementById('bodyLen').textContent = '0';
+      const toast = document.getElementById('toast');
+      toast.classList.add('show');
+      setTimeout(() => toast.classList.remove('show'), 3000);
+    } catch(err) {
+      console.error(err);
+      alert('등록 중 오류가 발생했습니다.');
+    } finally {
+      btn.disabled = false;
+      btn.textContent = '게시글 등록하기';
+    }
+  });
+</script>
+
+<footer>
+  오딘 거래소 · 비공식 팬 사이트 · 거래 사기 피해에 대해 운영자는 책임지지 않습니다.
+</footer>
+</body>
+</html>
