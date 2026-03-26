@@ -1,0 +1,331 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>정보 게시판 — 오딘 거래소</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+KR:wght@400;600;900&family=Noto+Sans+KR:wght@300;400;500;700&display=swap" rel="stylesheet"/>
+  <style>
+    :root {
+      --bg: #0a0c10;
+      --surface: #111318;
+      --surface2: #181c24;
+      --border: #252a36;
+      --gold: #c9a84c;
+      --gold-light: #e8c96a;
+      --gold-dim: rgba(201,168,76,0.15);
+      --red: #c94c4c;
+      --blue: #4c8ec9;
+      --blue-dim: rgba(76,142,201,0.15);
+      --green: #4caf82;
+      --green-dim: rgba(76,175,130,0.15);
+      --purple: #9b6fc9;
+      --purple-dim: rgba(155,111,201,0.15);
+      --text: #e8e2d4;
+      --text-muted: #7a7565;
+      --text-dim: #4a4840;
+      --glow: rgba(201,168,76,0.3);
+    }
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    body { background: var(--bg); color: var(--text); font-family: 'Noto Sans KR', sans-serif; min-height: 100vh; overflow-x: hidden; }
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background:
+        radial-gradient(ellipse 80% 50% at 50% -10%, rgba(201,168,76,0.08) 0%, transparent 60%),
+        repeating-linear-gradient(0deg, transparent, transparent 39px, rgba(255,255,255,0.015) 39px, rgba(255,255,255,0.015) 40px),
+        repeating-linear-gradient(90deg, transparent, transparent 39px, rgba(255,255,255,0.015) 39px, rgba(255,255,255,0.015) 40px);
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    header { position: relative; z-index: 10; border-bottom: 1px solid var(--border); background: rgba(10,12,16,0.95); backdrop-filter: blur(12px); }
+    .header-inner { max-width: 1100px; margin: 0 auto; padding: 0 24px; height: 64px; display: flex; align-items: center; justify-content: space-between; }
+    .logo { font-family: 'Noto Serif KR', serif; font-weight: 900; font-size: 1.35rem; color: var(--gold); letter-spacing: 0.05em; text-decoration: none; display: flex; align-items: center; gap: 10px; }
+    .logo-rune { width: 32px; height: 32px; border: 1.5px solid var(--gold); border-radius: 6px; display: flex; align-items: center; justify-content: center; font-size: 0.85rem; box-shadow: 0 0 10px var(--glow); }
+    .header-right { display: flex; align-items: center; gap: 10px; }
+    .nav-link { color: var(--text-muted); font-size: 0.85rem; text-decoration: none; padding: 6px 12px; border-radius: 6px; transition: color 0.2s, background 0.2s; }
+    .nav-link:hover { color: var(--text); background: var(--surface); }
+    .btn-admin { background: none; border: 1px solid var(--border); color: var(--text-dim); font-size: 0.78rem; padding: 6px 12px; border-radius: 6px; cursor: pointer; font-family: inherit; transition: border-color 0.2s, color 0.2s; }
+    .btn-admin:hover { border-color: var(--gold); color: var(--gold); }
+
+    .hero { position: relative; z-index: 1; text-align: center; padding: 52px 24px 36px; }
+    .hero h1 { font-family: 'Noto Serif KR', serif; font-size: clamp(1.6rem, 4vw, 2.8rem); font-weight: 900; color: var(--text); line-height: 1.2; }
+    .hero h1 span { color: var(--gold); }
+    .hero p { margin-top: 10px; color: var(--text-muted); font-size: 0.9rem; font-weight: 300; }
+
+    /* 카테고리 탭 */
+    .tab-wrap { max-width: 900px; margin: 0 auto 24px; padding: 0 24px; display: flex; gap: 8px; flex-wrap: wrap; position: relative; z-index: 1; }
+    .tab-btn { background: var(--surface); border: 1px solid var(--border); color: var(--text-muted); font-size: 0.82rem; padding: 7px 18px; border-radius: 20px; cursor: pointer; font-family: inherit; transition: all 0.2s; }
+    .tab-btn:hover { border-color: rgba(201,168,76,0.4); color: var(--text); }
+    .tab-btn.active { background: var(--gold-dim); border-color: var(--gold); color: var(--gold); font-weight: 700; }
+    .tab-btn.active.cat-팁 { background: var(--green-dim); border-color: var(--green); color: var(--green); }
+    .tab-btn.active.cat-공략 { background: var(--blue-dim); border-color: var(--blue); color: var(--blue); }
+    .tab-btn.active.cat-정보 { background: var(--purple-dim); border-color: var(--purple); color: var(--purple); }
+
+    /* 게시글 목록 */
+    .list-wrap { max-width: 900px; margin: 0 auto; padding: 0 24px 80px; position: relative; z-index: 1; }
+
+    .info-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 22px 24px;
+      margin-bottom: 12px;
+      cursor: pointer;
+      transition: border-color 0.2s, transform 0.15s;
+      position: relative;
+      overflow: hidden;
+    }
+    .info-card::before { content: ''; position: absolute; left: 0; top: 0; bottom: 0; width: 3px; border-radius: 3px 0 0 3px; }
+    .info-card.cat-전략::before { background: var(--gold); }
+    .info-card.cat-팁::before { background: var(--green); }
+    .info-card.cat-공략::before { background: var(--blue); }
+    .info-card.cat-정보::before { background: var(--purple); }
+    .info-card:hover { border-color: rgba(201,168,76,0.3); transform: translateX(4px); }
+
+    .info-card-header { display: flex; align-items: center; gap: 10px; margin-bottom: 8px; }
+    .cat-badge { display: inline-block; font-size: 0.68rem; font-weight: 700; padding: 3px 9px; border-radius: 4px; letter-spacing: 0.04em; white-space: nowrap; }
+    .cat-badge.전략 { background: var(--gold-dim); color: var(--gold); }
+    .cat-badge.팁 { background: var(--green-dim); color: var(--green); }
+    .cat-badge.공략 { background: var(--blue-dim); color: var(--blue); }
+    .cat-badge.정보 { background: var(--purple-dim); color: var(--purple); }
+
+    .info-title { font-family: 'Noto Serif KR', serif; font-size: 1rem; font-weight: 600; color: var(--text); flex: 1; }
+    .info-preview { font-size: 0.82rem; color: var(--text-muted); line-height: 1.6; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+    .info-footer { display: flex; align-items: center; justify-content: space-between; margin-top: 12px; padding-top: 10px; border-top: 1px solid var(--border); }
+    .info-date { font-size: 0.72rem; color: var(--text-dim); }
+    .info-views { font-size: 0.72rem; color: var(--text-dim); }
+
+    /* 빈 상태 */
+    .empty-state { text-align: center; padding: 80px 0; color: var(--text-dim); }
+    .empty-state p { font-size: 0.9rem; margin-top: 16px; }
+
+    /* 로딩 */
+    .loading { text-align: center; padding: 60px; color: var(--text-muted); font-size: 0.85rem; }
+    .spinner { width: 32px; height: 32px; border: 2px solid var(--border); border-top-color: var(--gold); border-radius: 50%; animation: spin 0.8s linear infinite; margin: 0 auto 16px; }
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    /* 상세 모달 */
+    .modal-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.8); z-index: 100; align-items: flex-start; justify-content: center; padding: 24px 20px; overflow-y: auto; }
+    .modal-overlay.open { display: flex; }
+    .modal { background: var(--surface2); border: 1px solid var(--border); border-radius: 12px; padding: 32px; width: 100%; max-width: 720px; position: relative; margin: auto; animation: modalIn 0.2s ease; }
+    @keyframes modalIn { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: translateY(0); } }
+    .modal-close { position: absolute; top: 16px; right: 16px; background: none; border: none; color: var(--text-muted); font-size: 1.2rem; cursor: pointer; line-height: 1; }
+    .modal-close:hover { color: var(--text); }
+    .modal-cat-row { margin-bottom: 14px; }
+    .modal-title { font-family: 'Noto Serif KR', serif; font-size: 1.6rem; font-weight: 900; color: var(--text); margin-bottom: 14px; line-height: 1.3; }
+    .modal-meta { font-size: 0.75rem; color: var(--text-dim); margin-bottom: 24px; padding-bottom: 20px; border-bottom: 1px solid var(--border); display: flex; gap: 12px; }
+    .modal-body { font-size: 0.92rem; color: var(--text-muted); line-height: 2; white-space: pre-wrap; word-break: keep-all; }
+
+    /* 관리자 비밀번호 모달 */
+    .admin-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.75); z-index: 200; align-items: center; justify-content: center; padding: 20px; }
+    .admin-overlay.open { display: flex; }
+    .admin-box { background: var(--surface2); border: 1px solid var(--border); border-radius: 12px; padding: 28px; width: 100%; max-width: 360px; position: relative; animation: modalIn 0.2s ease; }
+    .admin-box h2 { font-family: 'Noto Serif KR', serif; font-size: 1.1rem; color: var(--gold); margin-bottom: 6px; }
+    .admin-box p { font-size: 0.82rem; color: var(--text-muted); margin-bottom: 14px; }
+    .pw-input { width: 100%; background: var(--bg); border: 1px solid var(--border); color: var(--text); font-size: 0.9rem; padding: 10px 14px; border-radius: 6px; margin-bottom: 10px; font-family: inherit; }
+    .pw-input:focus { outline: 1px solid var(--gold); }
+    .btn-gold { width: 100%; background: var(--gold); color: #0a0c10; border: none; padding: 11px; border-radius: 6px; cursor: pointer; font-family: inherit; font-weight: 700; font-size: 0.9rem; transition: background 0.2s; }
+    .btn-gold:hover { background: var(--gold-light); }
+    .btn-cancel { width: 100%; background: none; border: 1px solid var(--border); color: var(--text-muted); padding: 10px; border-radius: 6px; cursor: pointer; font-family: inherit; font-size: 0.85rem; margin-top: 8px; transition: border-color 0.2s; }
+    .btn-cancel:hover { border-color: var(--text-muted); }
+    .pw-error { font-size: 0.78rem; color: var(--red); margin-bottom: 8px; display: none; }
+
+    footer { position: relative; z-index: 1; border-top: 1px solid var(--border); text-align: center; padding: 24px; font-size: 0.72rem; color: var(--text-dim); }
+  </style>
+</head>
+<body>
+
+<header>
+  <div class="header-inner">
+    <a href="index.html" class="logo">
+      <div class="logo-rune">⚔</div>
+      오딘 거래소
+    </a>
+    <div class="header-right">
+      <a href="index.html" class="nav-link">거래소</a>
+      <button class="btn-admin" onclick="openAdminLogin()">🔐 관리자</button>
+    </div>
+  </div>
+</header>
+
+<div class="hero">
+  <h1>오딘 <span>정보</span> 게시판</h1>
+  <p>운영자가 직접 작성한 팁, 전략, 공략 정보를 확인하세요</p>
+</div>
+
+<!-- 카테고리 탭 -->
+<div class="tab-wrap">
+  <button class="tab-btn active" data-cat="" onclick="filterCat(this, '')">전체</button>
+  <button class="tab-btn" data-cat="전략" onclick="filterCat(this, '전략')">⚔ 전략</button>
+  <button class="tab-btn cat-팁" data-cat="팁" onclick="filterCat(this, '팁')">💡 팁</button>
+  <button class="tab-btn cat-공략" data-cat="공략" onclick="filterCat(this, '공략')">🗺 공략</button>
+  <button class="tab-btn cat-정보" data-cat="정보" onclick="filterCat(this, '정보')">📋 정보</button>
+</div>
+
+<!-- 게시글 목록 -->
+<div class="list-wrap">
+  <div id="infoList">
+    <div class="loading"><div class="spinner"></div><p>불러오는 중…</p></div>
+  </div>
+</div>
+
+<!-- 상세 모달 -->
+<div class="modal-overlay" id="detailModal">
+  <div class="modal">
+    <button class="modal-close" onclick="closeDetail()">✕</button>
+    <div class="modal-cat-row"><span class="cat-badge" id="modalCat"></span></div>
+    <div class="modal-title" id="modalTitle"></div>
+    <div class="modal-meta" id="modalMeta"></div>
+    <div class="modal-body" id="modalBody"></div>
+  </div>
+</div>
+
+<!-- 관리자 로그인 모달 -->
+<div class="admin-overlay" id="adminOverlay">
+  <div class="admin-box">
+    <button class="modal-close" onclick="closeAdminLogin()">✕</button>
+    <h2>관리자 로그인</h2>
+    <p>관리자 비밀번호를 입력하세요.</p>
+    <input class="pw-input" type="password" id="adminPw" placeholder="비밀번호" onkeydown="if(event.key==='Enter') doAdminLogin()"/>
+    <div class="pw-error" id="pwError">비밀번호가 올바르지 않습니다.</div>
+    <button class="btn-gold" onclick="doAdminLogin()">확인</button>
+    <button class="btn-cancel" onclick="closeAdminLogin()">취소</button>
+  </div>
+</div>
+
+<script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+  import { getFirestore, collection, query, orderBy, getDocs, doc, updateDoc, increment }
+    from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+
+  const firebaseConfig = {
+    apiKey: "AIzaSyANMjDYYp9QChQbagktNVPtbToNX-a0-oM",
+    authDomain: "opensales-5a6fc.firebaseapp.com",
+    projectId: "opensales-5a6fc",
+    storageBucket: "opensales-5a6fc.firebasestorage.app",
+    messagingSenderId: "467560178074",
+    appId: "1:467560178074:web:afaaef2ac8201877e05a23",
+    measurementId: "G-BL0Z91W4VJ"
+  };
+
+  const app = initializeApp(firebaseConfig);
+  const db = getFirestore(app);
+
+  // ★ 관리자 비밀번호 — 원하시는 값으로 변경하세요
+  const ADMIN_PW = "Korea@12!@";
+
+  let allPosts = [];
+  let currentCat = '';
+
+  // ─── 데이터 로드 ───────────────────────────────
+  async function loadPosts() {
+    try {
+      const q = query(collection(db, "info_posts"), orderBy("createdAt", "desc"));
+      const snap = await getDocs(q);
+      allPosts = snap.docs.map(d => ({ id: d.id, ...d.data() }));
+      render(allPosts);
+    } catch(e) {
+      console.error(e);
+      document.getElementById('infoList').innerHTML = `<div class="empty-state"><p>데이터를 불러오지 못했습니다.</p></div>`;
+    }
+  }
+
+  function render(posts) {
+    const list = document.getElementById('infoList');
+    if (posts.length === 0) {
+      list.innerHTML = `<div class="empty-state">
+        <svg width="48" height="48" fill="none" viewBox="0 0 24 24" style="opacity:0.3;display:block;margin:0 auto"><path d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        <p>아직 작성된 글이 없습니다.</p>
+      </div>`;
+      return;
+    }
+    list.innerHTML = posts.map(p => {
+      const created = p.createdAt?.toDate ? p.createdAt.toDate() : new Date(p.createdAt);
+      const dateStr = created.toLocaleDateString('ko-KR', {year:'numeric', month:'short', day:'numeric'});
+      return `<div class="info-card cat-${esc(p.category)}" onclick="openDetail('${p.id}')">
+        <div class="info-card-header">
+          <span class="cat-badge ${esc(p.category)}">${esc(p.category)}</span>
+          <div class="info-title">${esc(p.title)}</div>
+        </div>
+        ${p.body ? `<div class="info-preview">${esc(p.body)}</div>` : ''}
+        <div class="info-footer">
+          <span class="info-date">${dateStr}</span>
+          <span class="info-views">👁 ${p.views||0}</span>
+        </div>
+      </div>`;
+    }).join('');
+  }
+
+  function esc(s) {
+    if (!s) return '';
+    return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+  }
+
+  // ─── 카테고리 필터 ─────────────────────────────
+  window.filterCat = function(btn, cat) {
+    currentCat = cat;
+    document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    render(cat ? allPosts.filter(p => p.category === cat) : allPosts);
+  };
+
+  // ─── 상세 모달 + 조회수 ────────────────────────
+  window.openDetail = async function(id) {
+    const p = allPosts.find(x => x.id === id);
+    if (!p) return;
+    const catEl = document.getElementById('modalCat');
+    catEl.textContent = p.category;
+    catEl.className = 'cat-badge ' + p.category;
+    document.getElementById('modalTitle').textContent = p.title;
+    const created = p.createdAt?.toDate ? p.createdAt.toDate() : new Date(p.createdAt);
+    document.getElementById('modalMeta').innerHTML =
+      `<span>${created.toLocaleDateString('ko-KR', {year:'numeric', month:'long', day:'numeric'})}</span><span>👁 조회 ${(p.views||0)+1}회</span>`;
+    document.getElementById('modalBody').textContent = p.body || '';
+    document.getElementById('detailModal').classList.add('open');
+    document.body.style.overflow = 'hidden';
+    try { await updateDoc(doc(db, "info_posts", id), { views: increment(1) }); p.views = (p.views||0)+1; } catch(e) {}
+  };
+
+  window.closeDetail = function() {
+    document.getElementById('detailModal').classList.remove('open');
+    document.body.style.overflow = '';
+  };
+  document.getElementById('detailModal').addEventListener('click', function(e) {
+    if (e.target === this) window.closeDetail();
+  });
+
+  // ─── 관리자 로그인 ─────────────────────────────
+  window.openAdminLogin = function() {
+    document.getElementById('adminPw').value = '';
+    document.getElementById('pwError').style.display = 'none';
+    document.getElementById('adminOverlay').classList.add('open');
+    setTimeout(() => document.getElementById('adminPw').focus(), 100);
+  };
+  window.closeAdminLogin = function() {
+    document.getElementById('adminOverlay').classList.remove('open');
+  };
+  window.doAdminLogin = function() {
+    const pw = document.getElementById('adminPw').value;
+    if (pw === ADMIN_PW) {
+      window.closeAdminLogin();
+      location.href = 'info-write.html?auth=' + btoa(ADMIN_PW);
+    } else {
+      document.getElementById('pwError').style.display = 'block';
+    }
+  };
+  document.getElementById('adminOverlay').addEventListener('click', function(e) {
+    if (e.target === this) window.closeAdminLogin();
+  });
+
+  loadPosts();
+</script>
+
+<footer>
+  오딘 거래소 · 비공식 팬 사이트 · 거래 사기 피해에 대해 운영자는 책임지지 않습니다.
+</footer>
+</body>
+</html>
